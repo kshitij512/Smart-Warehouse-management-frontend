@@ -1,38 +1,66 @@
 <div class="dashboard">
 
-  <h2>Welcome to Smart Warehouse System</h2>
+  <h2 class="page-title">
+    Welcome to Smart Warehouse System
+  </h2>
 
-  <p>
-    Logged in as:
-    <strong>{{ user$ | async }}</strong>
-  </p>
+  <div class="card">
 
-  <p>
-    Role:
-    <strong>{{ role$ | async }}</strong>
-  </p>
+    <p>
+      Logged in as:
+      <strong>{{ user$ | async }}</strong>
+    </p>
 
-  <hr />
+    <p>
+      Role:
+      <strong>{{ role$ | async }}</strong>
+    </p>
 
-  <div class="actions">
+  </div>
 
-    <!-- ADMIN -->
-    <div *ngIf="(role$ | async) === 'ADMIN'">
-      <button routerLink="/admin/users">Manage Users</button>
-      <button routerLink="/warehouses">Manage Warehouses</button>
-      <button routerLink="/products">Manage Products</button>
-    </div>
+  <div class="card">
 
-    <!-- WAREHOUSE_MANAGER -->
-    <div *ngIf="(role$ | async) === 'WAREHOUSE_MANAGER'">
-      <button routerLink="/warehouses">My Warehouses</button>
-      <button routerLink="/inventory">Inventory</button>
-      <button routerLink="/orders">Orders</button>
-    </div>
+    <h3>Quick Actions</h3>
 
-    <!-- STAFF -->
-    <div *ngIf="(role$ | async) === 'STAFF'">
-      <button routerLink="/orders">Assigned Orders</button>
+    <div class="actions">
+
+      <!-- ADMIN -->
+      <div *ngIf="(role$ | async) === 'ADMIN'" class="action-group">
+        <button class="btn-yellow" routerLink="/users">
+          Manage Users
+        </button>
+
+        <button class="btn-yellow" routerLink="/warehouses">
+          Manage Warehouses
+        </button>
+
+        <button class="btn-yellow" routerLink="/products">
+          Manage Products
+        </button>
+      </div>
+
+      <!-- WAREHOUSE_MANAGER -->
+      <div *ngIf="(role$ | async) === 'WAREHOUSE_MANAGER'" class="action-group">
+        <button class="btn-yellow" routerLink="/warehouses">
+          My Warehouses
+        </button>
+
+        <button class="btn-yellow" routerLink="/inventory">
+          Inventory
+        </button>
+
+        <button class="btn-yellow" routerLink="/orders">
+          Orders
+        </button>
+      </div>
+
+      <!-- STAFF -->
+      <div *ngIf="(role$ | async) === 'STAFF'" class="action-group">
+        <button class="btn-yellow" routerLink="/orders">
+          Assigned Orders
+        </button>
+      </div>
+
     </div>
 
   </div>

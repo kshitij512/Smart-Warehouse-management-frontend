@@ -1,12 +1,16 @@
 .dashboard {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .actions {
-  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
-button {
-  margin: 5px;
-  padding: 8px 12px;
+.action-group {
+  display: flex;
+  gap: 15px;
 }

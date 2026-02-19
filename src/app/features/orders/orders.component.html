@@ -1,1 +1,207 @@
-<h2>Orders</h2>
+<h2 class="page-title">
+  Order Management
+</h2>
+
+<p class="role-label">
+  Logged in as: <strong>{{ currentRole }}</strong>
+</p>
+
+<!-- Toast -->
+<div *ngIf="toastMessage" class="toast">
+  {{ toastMessage }}
+</div>
+
+<!-- Error -->
+<div *ngIf="error" class="error-banner">
+  {{ error }}
+  <button class="btn-red small" (click)="error = null">✖</button>
+</div>
+
+<!-- ================= CREATE ORDER ================= -->
+
+<div *ngIf="canCreateOrder" class="card">
+
+  <h3>Create Order</h3>
+
+  <form [formGroup]="form"
+        (ngSubmit)="createOrder()"
+        class="form-grid">
+
+    <select formControlName="warehouseId">
+      <option [ngValue]="null">Select Warehouse</option>
+      <option *ngFor="let w of warehouses" [ngValue]="w.id">
+        {{ w.name }}
+      </option>
+    </select>
+
+    <input placeholder="Customer Name" formControlName="customerName" />
+    <input placeholder="Customer Email" formControlName="customerEmail" />
+    <input placeholder="Customer Address" formControlName="customerAddress" />
+    <input placeholder="Customer Phone" formControlName="customerPhone" />
+
+    <div class="full-width">
+      <h4>Products</h4>
+
+      <div formArrayName="items">
+
+        <div *ngFor="let item of items.controls; let i = index"
+             [formGroupName]="i"
+             class="product-row">
+
+          <select formControlName="productId">
+            <option [ngValue]="null">Select Product</option>
+            <option *ngFor="let p of products" [ngValue]="p.id">
+              {{ p.name }} ({{ p.price }})
+            </option>
+          </select>
+
+          <input type="number" formControlName="quantity" />
+
+          <button type="button"
+                  class="btn-red small"
+                  (click)="removeItem(i)">
+            Remove
+          </button>
+
+        </div>
+
+      </div>
+
+      <button type="button"
+              class="btn-yellow small"
+              (click)="addItem()">
+        Add Product
+      </button>
+
+    </div>
+
+    <button class="btn-yellow"
+            type="submit"
+            [disabled]="form.invalid || loading">
+      Create Order
+    </button>
+
+  </form>
+
+</div>
+
+<!-- ================= ORDER LIST ================= -->
+
+<div class="card">
+
+  <h3>Orders</h3>
+
+  <div *ngIf="!isStaff" class="warehouse-selector">
+    <select [(ngModel)]="selectedWarehouseId"
+            (change)="loadOrders()">
+      <option [ngValue]="null">Select Warehouse</option>
+      <option *ngFor="let w of warehouses" [ngValue]="w.id">
+        {{ w.name }}
+      </option>
+    </select>
+  </div>
+
+  <table *ngIf="orders.length > 0">
+
+    <tr>
+      <th>ID</th>
+      <th>Customer</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Assigned</th>
+      <th>Actions</th>
+    </tr>
+
+    <tr *ngFor="let order of orders">
+
+      <td>{{ order.id }}</td>
+      <td>{{ order.customerName }}</td>
+      <td>{{ order.totalAmount }}</td>
+
+      <td>
+        <span class="status"
+              [ngClass]="order.status.toLowerCase()">
+          {{ order.status }}
+        </span>
+
+        <select *ngIf="canUpdateStatus"
+                (change)="updateStatus(order.id, $any($event.target).value)">
+          <option *ngFor="let s of orderStatuses"
+                  [ngValue]="s">
+            {{ s }}
+          </option>
+        </select>
+      </td>
+
+      <td>{{ order.assignedStaffName || '—' }}</td>
+
+      <td class="action-buttons">
+
+        <div *ngIf="canAssignStaff" class="assign-row">
+
+          <select [(ngModel)]="selectedStaffId">
+            <option [ngValue]="null">Assign Staff</option>
+            <option *ngFor="let s of staffUsers" [ngValue]="s.id">
+              {{ s.name }}
+            </option>
+          </select>
+
+          <button class="btn-yellow small"
+                  (click)="assignStaff(order.id)"
+                  [disabled]="!selectedStaffId">
+            Assign
+          </button>
+
+        </div>
+
+        <button class="btn-red small"
+                (click)="viewTracking(order.id)">
+          Tracking
+        </button>
+
+      </td>
+
+    </tr>
+
+  </table>
+
+</div>
+
+<!-- ================= TRACKING MODAL ================= -->
+
+<div *ngIf="showTrackingModal" class="modal-backdrop">
+  <div class="modal card">
+
+    <h3>Order Tracking</h3>
+
+    <ul class="tracking-list">
+      <li *ngIf="trackingData?.createdAt">
+        Created: {{ trackingData.createdAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.confirmedAt">
+        Confirmed: {{ trackingData.confirmedAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.pickingAt">
+        Picking: {{ trackingData.pickingAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.packedAt">
+        Packed: {{ trackingData.packedAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.shippedAt">
+        Shipped: {{ trackingData.shippedAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.deliveredAt">
+        Delivered: {{ trackingData.deliveredAt | date:'short' }}
+      </li>
+      <li *ngIf="trackingData?.cancelledAt">
+        Cancelled: {{ trackingData.cancelledAt | date:'short' }}
+      </li>
+    </ul>
+
+    <button class="btn-red"
+            (click)="closeTracking()">
+      Close
+    </button>
+
+  </div>
+</div>

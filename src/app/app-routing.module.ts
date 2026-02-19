@@ -72,5 +72,13 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login'
-  }
+  },
+  {
+  path: 'inventory',
+  canActivate: [authGuard, roleGuard],
+  data: { roles: ['WAREHOUSE_MANAGER'] },
+  loadComponent: () =>
+    import('./features/inventory/inventory.component')
+      .then(m => m.InventoryComponent)
+}
 ];

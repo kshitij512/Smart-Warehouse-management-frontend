@@ -1,0 +1,94 @@
+.page-title {
+  color: #D40511;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.dhl-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.dhl-table th {
+  background-color: #FFCC00;
+  color: black;
+  padding: 12px;
+  text-align: left;
+}
+
+.dhl-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.dhl-table tr:hover {
+  background-color: #fff7cc;
+}
+
+.role-badge {
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.enabled {
+  background: #e6f7e6;
+  color: #1a7f1a;
+}
+
+.disabled {
+  background: #ffe6e6;
+  color: #b30000;
+}
+
+.btn-red {
+  background-color: #D40511;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.btn-yellow {
+  background-color: #FFCC00;
+  color: black;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.btn-red:hover {
+  opacity: 0.9;
+}
+
+.btn-yellow:hover {
+  opacity: 0.9;
+}
+
+.toast {
+  background: #FFCC00;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.error-banner {
+  background: #ffd6d6;
+  color: #b30000;
+  padding: 10px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.loading, .empty {
+  margin-top: 20px;
+  font-weight: 500;
+}

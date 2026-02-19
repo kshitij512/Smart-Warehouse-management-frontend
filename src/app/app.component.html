@@ -1,26 +1,44 @@
-<nav *ngIf="(token$ | async)" class="navbar">
+<div class="app-wrapper">
 
-  <div class="left">
-    <a routerLink="/dashboard">Dashboard</a>
+  <!-- NAVBAR -->
+  <nav class="navbar">
 
-    <a *ngIf="(role$ | async) === 'ADMIN'" routerLink="/users">Users</a>
+    <div class="logo">
+      SMART WAREHOUSE
+    </div>
 
-    <a *ngIf="(role$ | async) !== 'STAFF'" routerLink="/warehouses">
-      Warehouses
-    </a>
+    <div class="nav-links">
 
-    <a *ngIf="(role$ | async) !== 'STAFF'" routerLink="/products">
-      Products
-    </a>
+      <a routerLink="/dashboard">Dashboard</a>
 
-    <a routerLink="/orders">Orders</a>
+      <a *ngIf="(role$ | async) === 'ADMIN'" routerLink="/users">
+        Users
+      </a>
+
+      <a *ngIf="(role$ | async) !== 'STAFF'" routerLink="/warehouses">
+        Warehouses
+      </a>
+
+      <a *ngIf="(role$ | async) !== 'STAFF'" routerLink="/products">
+        Products
+      </a>
+
+      <a routerLink="/orders">
+        Orders
+      </a>
+
+    </div>
+
+    <div class="user-info" *ngIf="(token$ | async)">
+      <span>{{ user$ | async }} ({{ role$ | async }})</span>
+      <button class="btn-red small" (click)="logout()">Logout</button>
+    </div>
+
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="content-container">
+    <router-outlet></router-outlet>
   </div>
 
-  <div class="right">
-    <span>{{ user$ | async }} ({{ role$ | async }})</span>
-    <button (click)="logout()">Logout</button>
-  </div>
-
-</nav>
-
-<router-outlet></router-outlet>
+</div>

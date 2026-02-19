@@ -1,1 +1,164 @@
-/* You can add global styles to this file, and also import other style files */
+/* ===== GLOBAL RESET ===== */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f5f6f8;
+  color: #111111;
+}
+
+/* ===== LAYOUT ===== */
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ===== NAVBAR ===== */
+
+.navbar {
+  background-color: #FFCC00;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  color: #D40511;
+}
+
+.nav-links a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #111111;
+  font-weight: 600;
+}
+
+.nav-links a:hover {
+  color: #D40511;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+/* ===== CONTENT AREA ===== */
+
+.content-container {
+  padding: 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===== BUTTON SYSTEM ===== */
+
+button {
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: 600;
+  border: none;
+  padding: 8px 14px;
+}
+
+.btn-red {
+  background-color: #D40511;
+  color: white;
+}
+
+.btn-red:hover {
+  opacity: 0.9;
+}
+
+.btn-yellow {
+  background-color: #FFCC00;
+  color: #111111;
+}
+
+.btn-yellow:hover {
+  opacity: 0.9;
+}
+
+.small {
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+/* ===== CARD STYLE ===== */
+
+.card {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-radius: 6px;
+}
+
+/* ===== TABLE STYLE ===== */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+th {
+  background-color: #FFCC00;
+  padding: 12px;
+  text-align: left;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+  background-color: #fff7cc;
+}
+
+/* ===== BADGES ===== */
+
+.status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.created { background: #e0f0ff; }
+.confirmed { background: #fff4cc; }
+.picking { background: #e6f7ff; }
+.packed { background: #f0e6ff; }
+.shipped { background: #e6ffe6; }
+.delivered { background: #ccffcc; }
+.cancelled { background: #ffe6e6; }
+
+/* ===== TOAST ===== */
+
+.toast {
+  background: #FFCC00;
+  padding: 12px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* ===== ERROR ===== */
+
+.error-banner {
+  background: #ffe6e6;
+  color: #b30000;
+  padding: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+}

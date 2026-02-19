@@ -1,40 +1,27 @@
-table {
-  width: 100%;
-  border-collapse: collapse;
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
   margin-top: 10px;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-th {
-  cursor: pointer;
-  background: #f4f4f4;
-}
-
-button {
-  margin-right: 5px;
-}
-
-.error-banner {
-  background: #ffdddd;
-  color: #a00000;
-  padding: 10px;
-  margin-bottom: 10px;
+.search-row {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #28a745;
-  color: white;
-  padding: 10px 15px;
-  border-radius: 4px;
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
 }
 
 .modal-backdrop {
@@ -50,7 +37,12 @@ button {
 }
 
 .modal {
-  background: white;
-  padding: 20px;
-  border-radius: 5px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }

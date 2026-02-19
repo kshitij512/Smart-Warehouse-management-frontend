@@ -1,1 +1,73 @@
-<h2>User Management</h2>
+<h2 class="page-title">User Management</h2>
+
+<!-- Toast -->
+<div *ngIf="toastMessage" class="toast">
+  {{ toastMessage }}
+</div>
+
+<!-- Error -->
+<div *ngIf="error" class="error-banner">
+  {{ error }}
+  <button (click)="error = null">✖</button>
+</div>
+
+<div *ngIf="loading" class="loading">
+  Loading users...
+</div>
+
+<table *ngIf="!loading && users.length > 0" class="dhl-table">
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let user of users">
+
+      <td>{{ user.name }}</td>
+      <td>{{ user.email }}</td>
+
+      <td>
+        <span class="role-badge">
+          {{ user.role }}
+        </span>
+      </td>
+
+      <td>
+        <span
+          class="status-badge"
+          [ngClass]="user.enabled ? 'enabled' : 'disabled'">
+          {{ user.enabled ? 'Enabled' : 'Disabled' }}
+        </span>
+      </td>
+
+      <td>
+        <button
+          *ngIf="user.enabled"
+          class="btn-red"
+          (click)="disableUser(user.id)">
+          Disable
+        </button>
+
+        <button
+          *ngIf="!user.enabled"
+          class="btn-yellow"
+          (click)="enableUser(user.id)">
+          Enable
+        </button>
+      </td>
+
+    </tr>
+  </tbody>
+
+</table>
+
+<div *ngIf="!loading && users.length === 0" class="empty">
+  No users found.
+</div>

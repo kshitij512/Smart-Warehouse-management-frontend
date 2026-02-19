@@ -1,58 +1,70 @@
-<h2>Warehouse Management</h2>
+<h2 class="page-title">
+  Warehouse Management
+</h2>
 
 <!-- Toast -->
 <div *ngIf="toastMessage" class="toast">
   {{ toastMessage }}
 </div>
 
-<!-- Loading -->
-<div *ngIf="loading">Loading...</div>
-
 <!-- Error Banner -->
 <div *ngIf="error" class="error-banner">
   <span>{{ error }}</span>
-  <button (click)="error = null">✖</button>
+  <button class="btn-red small" (click)="error = null">✖</button>
 </div>
 
-<!-- ===================== CREATE FORM ===================== -->
+<!-- ===================== CREATE / EDIT FORM ===================== -->
 
-<h3>
-  {{ editMode ? 'Edit Warehouse' : 'Create Warehouse' }}
-</h3>
+<div class="card">
 
-<form [formGroup]="form" (ngSubmit)="submit()">
+  <h3>
+    {{ editMode ? 'Edit Warehouse' : 'Create Warehouse' }}
+  </h3>
 
-  <input placeholder="Name" formControlName="name" />
-  <input placeholder="Location" formControlName="location" />
-  <input type="number" placeholder="Capacity" formControlName="capacity" />
-  <input placeholder="Code" formControlName="code" />
-  <input type="number" placeholder="Manager ID" formControlName="managerId" />
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
 
-  <button type="submit" [disabled]="form.invalid || loading">
-    {{ editMode ? 'Update' : 'Create' }}
-  </button>
+    <input placeholder="Name" formControlName="name" />
+    <input placeholder="Location" formControlName="location" />
+    <input type="number" placeholder="Capacity" formControlName="capacity" />
+    <input placeholder="Code" formControlName="code" />
+    <input type="number" placeholder="Manager ID" formControlName="managerId" />
 
-</form>
+    <button class="btn-yellow" type="submit"
+            [disabled]="form.invalid || loading">
+      {{ editMode ? 'Update' : 'Create' }}
+    </button>
 
-<hr />
+  </form>
+
+</div>
 
 <!-- ===================== SEARCH ===================== -->
 
-<h3>Warehouse List</h3>
+<div class="card">
 
-<input
-  placeholder="Search (name, location, code)"
-  [(ngModel)]="searchTerm"
-/>
+  <h3>Warehouse List</h3>
 
-<button (click)="applySearch()">Search</button>
-<button (click)="resetSearch()">Reset</button>
+  <div class="search-row">
+    <input
+      placeholder="Search (name, location, code)"
+      [(ngModel)]="searchTerm"
+    />
 
-<hr />
+    <button class="btn-yellow" (click)="applySearch()">
+      Search
+    </button>
+
+    <button class="btn-red" (click)="resetSearch()">
+      Reset
+    </button>
+  </div>
+
+</div>
 
 <!-- ===================== TABLE ===================== -->
 
 <table *ngIf="filteredWarehouses.length > 0">
+
   <tr>
     <th (click)="sort('name')">Name</th>
     <th (click)="sort('location')">Location</th>
@@ -63,21 +75,29 @@
   </tr>
 
   <tr *ngFor="let w of paginatedWarehouses">
+
     <td>{{ w.name }}</td>
     <td>{{ w.location }}</td>
     <td>{{ w.code }}</td>
     <td>{{ w.capacity }}</td>
     <td>{{ w.managerName }}</td>
-    <button (click)="editWarehouse(w)">
-  Edit
-</button>
 
-    <td>
-      <button (click)="confirmDelete(w.id)">
+    <td class="action-buttons">
+
+      <button class="btn-yellow small"
+              (click)="editWarehouse(w)">
+        Edit
+      </button>
+
+      <button class="btn-red small"
+              (click)="confirmDelete(w.id)">
         Delete
       </button>
+
     </td>
+
   </tr>
+
 </table>
 
 <div *ngIf="!loading && filteredWarehouses.length === 0">
@@ -86,19 +106,20 @@
 
 <!-- ===================== PAGINATION ===================== -->
 
-<div class="pagination" *ngIf="filteredWarehouses.length > pageSize">
+<div class="pagination"
+     *ngIf="filteredWarehouses.length > pageSize">
 
-  <button
-    (click)="currentPage = currentPage - 1"
-    [disabled]="currentPage === 1">
+  <button class="btn-yellow small"
+          (click)="currentPage = currentPage - 1"
+          [disabled]="currentPage === 1">
     Previous
   </button>
 
   <span>Page {{ currentPage }}</span>
 
-  <button
-    (click)="currentPage = currentPage + 1"
-    [disabled]="currentPage * pageSize >= filteredWarehouses.length">
+  <button class="btn-yellow small"
+          (click)="currentPage = currentPage + 1"
+          [disabled]="currentPage * pageSize >= filteredWarehouses.length">
     Next
   </button>
 
@@ -107,10 +128,21 @@
 <!-- ===================== CONFIRM MODAL ===================== -->
 
 <div *ngIf="showConfirmModal" class="modal-backdrop">
-  <div class="modal">
+  <div class="modal card">
+
     <p>Are you sure you want to delete this warehouse?</p>
 
-    <button (click)="deleteWarehouse()">Yes</button>
-    <button (click)="cancelDelete()">Cancel</button>
+    <div class="modal-actions">
+      <button class="btn-red"
+              (click)="deleteWarehouse()">
+        Yes
+      </button>
+
+      <button class="btn-yellow"
+              (click)="cancelDelete()">
+        Cancel
+      </button>
+    </div>
+
   </div>
 </div>
