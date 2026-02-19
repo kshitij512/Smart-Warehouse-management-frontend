@@ -1,0 +1,12 @@
+.dashboard {
+  padding: 20px;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+button {
+  margin: 5px;
+  padding: 8px 12px;
+}

@@ -1,0 +1,40 @@
+<div class="dashboard">
+
+  <h2>Welcome to Smart Warehouse System</h2>
+
+  <p>
+    Logged in as:
+    <strong>{{ user$ | async }}</strong>
+  </p>
+
+  <p>
+    Role:
+    <strong>{{ role$ | async }}</strong>
+  </p>
+
+  <hr />
+
+  <div class="actions">
+
+    <!-- ADMIN -->
+    <div *ngIf="(role$ | async) === 'ADMIN'">
+      <button routerLink="/admin/users">Manage Users</button>
+      <button routerLink="/warehouses">Manage Warehouses</button>
+      <button routerLink="/products">Manage Products</button>
+    </div>
+
+    <!-- WAREHOUSE_MANAGER -->
+    <div *ngIf="(role$ | async) === 'WAREHOUSE_MANAGER'">
+      <button routerLink="/warehouses">My Warehouses</button>
+      <button routerLink="/inventory">Inventory</button>
+      <button routerLink="/orders">Orders</button>
+    </div>
+
+    <!-- STAFF -->
+    <div *ngIf="(role$ | async) === 'STAFF'">
+      <button routerLink="/orders">Assigned Orders</button>
+    </div>
+
+  </div>
+
+</div>
