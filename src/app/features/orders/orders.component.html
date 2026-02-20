@@ -91,16 +91,37 @@
 
   <h3>Orders</h3>
 
-  <!-- Warehouse Selector -->
-  <div *ngIf="!isStaff" class="warehouse-selector">
-    <select [(ngModel)]="selectedWarehouseId"
-            (ngModelChange)="loadOrders()">
+  <!-- FILTER BAR -->
+  <div class="warehouse-selector">
+
+    <!-- Warehouse Filter -->
+    <select *ngIf="!isStaff"
+            [(ngModel)]="selectedWarehouseId"
+            (ngModelChange)="updateFilters()">
+
       <option [ngValue]="null">Select Warehouse</option>
       <option *ngFor="let w of warehouses" [ngValue]="w.id">
         {{ w.name }}
       </option>
+
     </select>
+
+    <!-- Status Filter -->
+    <select [(ngModel)]="selectedStatus"
+            (ngModelChange)="updateFilters()">
+
+      <option [ngValue]="null">All Status</option>
+
+      <option *ngFor="let s of orderStatuses"
+              [ngValue]="s">
+        {{ s }}
+      </option>
+
+    </select>
+
   </div>
+
+  <!-- ================= TABLE ================= -->
 
   <table *ngIf="orders.length > 0">
 
@@ -129,27 +150,21 @@
         </span>
 
         <!-- Status Dropdown -->
-<select
-  *ngIf="canUpdateStatus && order.allowedTransitions.length > 0"
-  [ngModel]="null"
-  (ngModelChange)="updateStatus(order, $event)"
->
+        <select
+          *ngIf="canUpdateStatus && order.allowedTransitions.length > 0"
+          [ngModel]="null"
+          (ngModelChange)="updateStatus(order, $event)">
 
-  <option [ngValue]="null" disabled selected>
-    Change Status
-  </option>
+          <option [ngValue]="null" disabled>
+            Change Status
+          </option>
 
-  <option
-    *ngFor="let s of order.allowedTransitions"
-    [ngValue]="s"
-  >
-    {{ s }}
-  </option>
+          <option *ngFor="let s of order.allowedTransitions"
+                  [ngValue]="s">
+            {{ s }}
+          </option>
 
-</select>
-
-
-
+        </select>
 
       </td>
 
@@ -161,7 +176,7 @@
       <!-- ACTIONS -->
       <td class="action-buttons">
 
-        <!-- ASSIGN STAFF (PER ROW) -->
+        <!-- ASSIGN STAFF -->
         <div *ngIf="canAssignStaff" class="assign-row">
 
           <select [(ngModel)]="order._selectedStaffId">
@@ -199,7 +214,6 @@
 
 <!-- ================= TRACKING MODAL ================= -->
 
-
 <div *ngIf="showTrackingModal" class="modal-backdrop">
   <div class="modal card tracking-modal">
 
@@ -207,7 +221,7 @@
 
     <div class="timeline">
 
-      <div *ngFor="let step of orderStatuses; let i = index"
+      <div *ngFor="let step of orderStatuses"
            class="timeline-step"
            [ngClass]="getStepClass(step)">
 
@@ -219,6 +233,7 @@
           <div class="timestamp" *ngIf="getTimestamp(step)">
             {{ getTimestamp(step) | date:'medium' }}
           </div>
+
         </div>
 
       </div>
@@ -232,4 +247,3 @@
 
   </div>
 </div>
-

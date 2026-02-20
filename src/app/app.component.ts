@@ -2,14 +2,19 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
 import { selectToken, selectUser, selectRole } from './store/auth/auth.selectors';
 import * as AuthActions from './store/auth/auth.actions';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    RouterModule
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

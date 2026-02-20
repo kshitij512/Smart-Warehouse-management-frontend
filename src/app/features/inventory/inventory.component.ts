@@ -26,6 +26,8 @@ export class InventoryComponent {
 
   selectedWarehouseId: number | null = null;
 
+  showOnlyLowStock = false;
+
   loading = false;
   error: string | null = null;
   toastMessage: string | null = null;
@@ -60,6 +62,29 @@ export class InventoryComponent {
       }
     });
   }
+
+  get lowStockItems() {
+  return this.inventory.filter(i => i.quantity <= i.reorderThreshold);
+}
+
+get criticalStockItems() {
+  return this.inventory.filter(i =>
+    i.quantity <= i.reorderThreshold * 0.5
+  );
+}
+
+get displayedInventory() {
+  if (this.showOnlyLowStock) {
+    return this.lowStockItems;
+  }
+  return this.inventory;
+}
+
+getStockStatus(item: InventoryResponse): 'normal' | 'low' | 'critical' {
+  if (item.quantity <= item.reorderThreshold * 0.5) return 'critical';
+  if (item.quantity <= item.reorderThreshold) return 'low';
+  return 'normal';
+}
 
   loadProducts() {
     this.productService.getAll().subscribe({

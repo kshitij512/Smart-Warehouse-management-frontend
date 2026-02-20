@@ -1,7 +1,7 @@
 <div class="app-wrapper">
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
+  <!-- NAVBAR (ONLY WHEN LOGGED IN) -->
+  <nav class="navbar" *ngIf="(token$ | async)">
 
     <div class="logo">
       SMART WAREHOUSE
@@ -23,14 +23,22 @@
         Products
       </a>
 
+      <!-- INVENTORY (WAREHOUSE MANAGER ONLY) -->
+      <a *ngIf="(role$ | async) === 'WAREHOUSE_MANAGER'"
+         routerLink="/inventory">
+        Inventory
+      </a>
+
       <a routerLink="/orders">
         Orders
       </a>
 
     </div>
 
-    <div class="user-info" *ngIf="(token$ | async)">
-      <span>{{ user$ | async }} ({{ role$ | async }})</span>
+    <div class="user-info">
+      <span>
+        {{ user$ | async }} ({{ role$ | async }})
+      </span>
       <button class="btn-red small" (click)="logout()">Logout</button>
     </div>
 

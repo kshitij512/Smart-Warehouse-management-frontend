@@ -31,68 +31,66 @@
 
 </div>
 
-<!-- ===================== ADD PRODUCT ===================== -->
+<!-- ===================== INVENTORY INTELLIGENCE ===================== -->
 
 <div *ngIf="selectedWarehouseId" class="card">
 
-  <h3>Add Product to Warehouse</h3>
+  <h3>Inventory Intelligence</h3>
 
-  <form [formGroup]="form"
-        (ngSubmit)="addProductToWarehouse()"
-        class="form-grid">
+  <!-- Summary -->
+  <div class="inventory-summary">
 
-    <select formControlName="productId">
-      <option [ngValue]="null">Select Product</option>
-      <option *ngFor="let p of products" [ngValue]="p.id">
-        {{ p.name }} ({{ p.sku }})
-      </option>
-    </select>
+    <div class="summary-box">
+      <strong>Total Products</strong>
+      <div>{{ inventory.length }}</div>
+    </div>
 
-    <input
-      type="number"
-      placeholder="Initial Quantity"
-      formControlName="quantity"
-    />
+    <div class="summary-box warning">
+      <strong>Low Stock</strong>
+      <div>{{ lowStockItems.length }}</div>
+    </div>
 
-    <input
-      type="number"
-      placeholder="Reorder Threshold"
-      formControlName="reorderThreshold"
-    />
+    <div class="summary-box danger">
+      <strong>Critical</strong>
+      <div>{{ criticalStockItems.length }}</div>
+    </div>
 
-    <button class="btn-yellow"
-            type="submit"
-            [disabled]="form.invalid">
-      Add Product
-    </button>
+  </div>
 
-  </form>
+  <!-- Toggle -->
+  <div class="filter-row">
+    <label>
+      <input type="checkbox"
+             [(ngModel)]="showOnlyLowStock">
+      Show only low stock
+    </label>
+  </div>
 
-</div>
-
-<!-- ===================== INVENTORY TABLE ===================== -->
-
-<div *ngIf="selectedWarehouseId" class="card">
-
-  <h3>Inventory</h3>
-
-  <table *ngIf="inventory.length > 0">
+  <!-- Table -->
+  <table *ngIf="displayedInventory.length > 0">
 
     <tr>
       <th>Product</th>
       <th>SKU</th>
       <th>Quantity</th>
-      <th>Reorder Threshold</th>
-      <th>Stock Controls</th>
+      <th>Threshold</th>
+      <th>Status</th>
+      <th>Controls</th>
     </tr>
 
-    <tr *ngFor="let item of inventory"
-        [ngClass]="{'low-stock-row': isLowStock(item)}">
+    <tr *ngFor="let item of displayedInventory">
 
       <td>{{ item.productName }}</td>
       <td>{{ item.sku }}</td>
       <td>{{ item.quantity }}</td>
       <td>{{ item.reorderThreshold }}</td>
+
+      <td>
+        <span class="stock-badge"
+              [ngClass]="getStockStatus(item)">
+          {{ getStockStatus(item) | uppercase }}
+        </span>
+      </td>
 
       <td class="action-buttons">
 
@@ -112,8 +110,8 @@
 
   </table>
 
-  <div *ngIf="!loading && inventory.length === 0">
-    No inventory found for this warehouse.
+  <div *ngIf="!loading && displayedInventory.length === 0">
+    No inventory data found.
   </div>
 
 </div>

@@ -4,6 +4,9 @@ import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angu
 
 import { ProductResponse } from 'src/app/core/models/product.model';
 import { ProductService } from 'src/app/core/services/product.service';
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { debounceTime, switchMap, map, catchError, of } from 'rxjs';
+
 
 @Component({
   selector: 'app-products',
@@ -35,10 +38,15 @@ export class ProductsComponent {
   deleteId: number | null = null;
 
   form = this.fb.group({
-    sku: ['', Validators.required],
-    name: ['', Validators.required],
-    price: [0, [Validators.required, Validators.min(0.01)]]
-  });
+  sku: ['', {
+    validators: [Validators.required],
+    asyncValidators: [this.skuValidator()],
+    updateOn: 'blur'
+  }],
+  name: ['', Validators.required],
+  price: [0, [Validators.required, Validators.min(0.01)]]
+});
+
 
   constructor(
     private fb: FormBuilder,
@@ -48,6 +56,28 @@ export class ProductsComponent {
   ngOnInit() {
     this.loadProducts();
   }
+
+  private skuValidator(): AsyncValidatorFn {
+
+  return (control: AbstractControl) => {
+
+    if (!control.value || this.editMode) {
+      return of(null);
+    }
+
+    return of(control.value).pipe(
+      debounceTime(400),
+      switchMap(sku =>
+        this.productService.checkSkuExists(sku)
+      ),
+      map(exists =>
+        exists ? { skuTaken: true } : null
+      ),
+      catchError(() => of(null))
+    );
+  };
+}
+
 
   loadProducts() {
     this.loading = true;

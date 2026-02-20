@@ -30,4 +30,9 @@ export class ProductService {
   delete(id: number) {
     return this.http.delete(`${this.API}/${id}`);
   }
+
+  checkSkuExists(sku: string) {
+  return this.http.get<boolean>(`/api/products/exists/${sku}`);
+}
+
 }
