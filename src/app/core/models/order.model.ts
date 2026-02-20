@@ -22,4 +22,5 @@ export interface OrderResponse {
   assignedStaffName?: string;
   createdAt: string;
   items: OrderItemResponse[];
+  allowedTransitions: OrderStatus[];
 }

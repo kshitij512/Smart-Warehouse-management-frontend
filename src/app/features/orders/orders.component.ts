@@ -21,6 +21,12 @@ import { Store } from '@ngrx/store';
 import { selectRole } from 'src/app/store/auth/auth.selectors';
 import { AuthState } from 'src/app/store/auth/auth.reducer';
 
+/* ================= UI EXTENDED MODEL ================= */
+
+interface OrderUI extends OrderResponse {
+  _selectedStaffId?: number | null;
+}
+
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -32,12 +38,11 @@ export class OrdersComponent {
 
   currentRole: string | null = null;
 
-  selectedStaffId: number | null = null;
   staffUsers: UserResponse[] = [];
 
   warehouses: WarehouseResponse[] = [];
   products: ProductResponse[] = [];
-  orders: OrderResponse[] = [];
+  orders: OrderUI[] = [];
 
   selectedWarehouseId: number | null = null;
 
@@ -75,6 +80,8 @@ export class OrdersComponent {
     private userService: UserService,
     private store: Store<{ auth: AuthState }>
   ) {}
+
+  /* ================= INIT ================= */
 
   ngOnInit() {
     this.store.select(selectRole)
@@ -139,7 +146,6 @@ export class OrdersComponent {
       next: (data: WarehouseResponse[]) => {
         this.warehouses = data;
 
-        // Auto select warehouse for STAFF
         if (this.isStaff && data.length > 0) {
           this.selectedWarehouseId = data[0].id;
           this.loadOrders();
@@ -172,7 +178,10 @@ export class OrdersComponent {
     this.orderService.getByWarehouse(this.selectedWarehouseId)
       .subscribe({
         next: (data: OrderResponse[]) => {
-          this.orders = data;
+          this.orders = data.map(order => ({
+            ...order,
+            _selectedStaffId: null
+          }));
         }
       });
   }
@@ -200,27 +209,37 @@ export class OrdersComponent {
       });
   }
 
-  updateStatus(orderId: number, status: OrderStatus) {
+  updateStatus(order: OrderUI, status: OrderStatus) {
     if (!this.canUpdateStatus) return;
 
-    this.orderService.updateStatus(orderId, status)
+    this.orderService.updateStatus(order.id, status)
       .subscribe({
-        next: () => this.loadOrders(),
+        next: () => {
+          order.status = status;
+          this.showToast('Status updated');
+        },
         error: (err: any) => {
           this.error = err.error?.message || 'Status update failed';
         }
       });
   }
 
-  assignStaff(orderId: number) {
-    if (!this.canAssignStaff || !this.selectedStaffId) return;
+  assignStaff(order: OrderUI) {
+    if (!this.canAssignStaff || !order._selectedStaffId) return;
 
-    this.orderService.assignStaff(orderId, this.selectedStaffId)
+    this.orderService.assignStaff(order.id, order._selectedStaffId)
       .subscribe({
         next: () => {
+          const selected = this.staffUsers.find(
+            s => s.id === order._selectedStaffId
+          );
+
+          if (selected) {
+            order.assignedStaffName = selected.name;
+          }
+
+          order._selectedStaffId = null;
           this.showToast('Staff assigned');
-          this.selectedStaffId = null;
-          this.loadOrders();
         },
         error: (err: any) => {
           this.error = err.error?.message || 'Assignment failed';
@@ -237,6 +256,51 @@ export class OrdersComponent {
         }
       });
   }
+  getTimestamp(step: OrderStatus): string | null {
+  if (!this.trackingData) return null;
+
+  switch (step) {
+    case 'CREATED': return this.trackingData.createdAt ?? null;
+    case 'CONFIRMED': return this.trackingData.confirmedAt ?? null;
+    case 'PICKING': return this.trackingData.pickingAt ?? null;
+    case 'PACKED': return this.trackingData.packedAt ?? null;
+    case 'SHIPPED': return this.trackingData.shippedAt ?? null;
+    case 'DELIVERED': return this.trackingData.deliveredAt ?? null;
+    case 'CANCELLED': return this.trackingData.cancelledAt ?? null;
+    default: return null;
+  }
+}
+
+getStepClass(step: OrderStatus): string {
+  if (!this.trackingData) return 'pending';
+
+  const currentStatus = this.trackingData.currentStatus as OrderStatus;
+
+  if (currentStatus === 'CANCELLED') {
+    if (step === 'CANCELLED') return 'cancelled';
+    if (this.getTimestamp(step)) return 'completed';
+    return 'pending';
+  }
+
+  const statusOrder: OrderStatus[] = [
+    'CREATED',
+    'CONFIRMED',
+    'PICKING',
+    'PACKED',
+    'SHIPPED',
+    'DELIVERED'
+  ];
+
+  const currentIndex = statusOrder.indexOf(currentStatus);
+  const stepIndex = statusOrder.indexOf(step);
+
+  if (stepIndex < currentIndex) return 'completed';
+  if (stepIndex === currentIndex) return 'active';
+
+  return 'pending';
+}
+
+
 
   closeTracking() {
     this.showTrackingModal = false;

@@ -1,3 +1,5 @@
+/* ================= FORM LAYOUT ================= */
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -30,14 +32,13 @@
   gap: 8px;
 }
 
-.tracking-list {
-  list-style: none;
-  padding: 0;
+/* ================= STATUS BADGE POLISH ================= */
+
+.status {
+  margin-right: 8px;
 }
 
-.tracking-list li {
-  margin-bottom: 8px;
-}
+/* ================= MODAL ================= */
 
 .modal-backdrop {
   position: fixed;
@@ -49,9 +50,96 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal {
   max-width: 450px;
   width: 100%;
+}
+
+/* ================= TRACKING TIMELINE ================= */
+
+.tracking-modal {
+  max-width: 500px;
+}
+
+.timeline {
+  position: relative;
+  margin: 25px 0;
+  padding-left: 20px;
+}
+
+/* Vertical Progress Line */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    #2e7d32 0%,
+    #2e7d32 50%,
+    #e0e0e0 50%,
+    #e0e0e0 100%
+  );
+  transition: all 0.4s ease;
+}
+
+/* Individual Step */
+.timeline-step {
+  position: relative;
+  margin-bottom: 30px;
+  padding-left: 30px;
+}
+
+/* Circle */
+.timeline-step .circle {
+  position: absolute;
+  left: -1px;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ccc;
+  transition: all 0.3s ease;
+}
+
+/* Completed Step */
+.timeline-step.completed .circle {
+  background: #2e7d32;
+}
+
+/* Active Step (DHL Premium) */
+.timeline-step.active .circle {
+  background: #FFCC00; /* DHL Yellow */
+  box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.25);
+}
+
+.timeline-step.active strong {
+  color: #D40511; /* DHL Red text */
+}
+
+/* Pending Step */
+.timeline-step.pending .circle {
+  background: #bdbdbd;
+}
+
+/* Cancelled Step */
+.timeline-step.cancelled .circle {
+  background: #D40511;
+}
+
+/* Text Styling */
+.timeline-step .content strong {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.timestamp {
+  font-size: 13px;
+  color: #666;
 }

@@ -91,9 +91,10 @@
 
   <h3>Orders</h3>
 
+  <!-- Warehouse Selector -->
   <div *ngIf="!isStaff" class="warehouse-selector">
     <select [(ngModel)]="selectedWarehouseId"
-            (change)="loadOrders()">
+            (ngModelChange)="loadOrders()">
       <option [ngValue]="null">Select Warehouse</option>
       <option *ngFor="let w of warehouses" [ngValue]="w.id">
         {{ w.name }}
@@ -118,28 +119,52 @@
       <td>{{ order.customerName }}</td>
       <td>{{ order.totalAmount }}</td>
 
+      <!-- STATUS COLUMN -->
       <td>
+
+        <!-- Status Badge -->
         <span class="status"
               [ngClass]="order.status.toLowerCase()">
           {{ order.status }}
         </span>
 
-        <select *ngIf="canUpdateStatus"
-                (change)="updateStatus(order.id, $any($event.target).value)">
-          <option *ngFor="let s of orderStatuses"
-                  [ngValue]="s">
-            {{ s }}
-          </option>
-        </select>
+        <!-- Status Dropdown -->
+<select
+  *ngIf="canUpdateStatus && order.allowedTransitions.length > 0"
+  [ngModel]="null"
+  (ngModelChange)="updateStatus(order, $event)"
+>
+
+  <option [ngValue]="null" disabled selected>
+    Change Status
+  </option>
+
+  <option
+    *ngFor="let s of order.allowedTransitions"
+    [ngValue]="s"
+  >
+    {{ s }}
+  </option>
+
+</select>
+
+
+
+
       </td>
 
-      <td>{{ order.assignedStaffName || '—' }}</td>
+      <!-- ASSIGNED STAFF -->
+      <td>
+        {{ order.assignedStaffName || '—' }}
+      </td>
 
+      <!-- ACTIONS -->
       <td class="action-buttons">
 
+        <!-- ASSIGN STAFF (PER ROW) -->
         <div *ngIf="canAssignStaff" class="assign-row">
 
-          <select [(ngModel)]="selectedStaffId">
+          <select [(ngModel)]="order._selectedStaffId">
             <option [ngValue]="null">Assign Staff</option>
             <option *ngFor="let s of staffUsers" [ngValue]="s.id">
               {{ s.name }}
@@ -147,13 +172,14 @@
           </select>
 
           <button class="btn-yellow small"
-                  (click)="assignStaff(order.id)"
-                  [disabled]="!selectedStaffId">
+                  (click)="assignStaff(order)"
+                  [disabled]="!order._selectedStaffId">
             Assign
           </button>
 
         </div>
 
+        <!-- TRACKING -->
         <button class="btn-red small"
                 (click)="viewTracking(order.id)">
           Tracking
@@ -165,38 +191,39 @@
 
   </table>
 
+  <div *ngIf="orders.length === 0">
+    No orders found.
+  </div>
+
 </div>
 
 <!-- ================= TRACKING MODAL ================= -->
 
+
 <div *ngIf="showTrackingModal" class="modal-backdrop">
-  <div class="modal card">
+  <div class="modal card tracking-modal">
 
     <h3>Order Tracking</h3>
 
-    <ul class="tracking-list">
-      <li *ngIf="trackingData?.createdAt">
-        Created: {{ trackingData.createdAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.confirmedAt">
-        Confirmed: {{ trackingData.confirmedAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.pickingAt">
-        Picking: {{ trackingData.pickingAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.packedAt">
-        Packed: {{ trackingData.packedAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.shippedAt">
-        Shipped: {{ trackingData.shippedAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.deliveredAt">
-        Delivered: {{ trackingData.deliveredAt | date:'short' }}
-      </li>
-      <li *ngIf="trackingData?.cancelledAt">
-        Cancelled: {{ trackingData.cancelledAt | date:'short' }}
-      </li>
-    </ul>
+    <div class="timeline">
+
+      <div *ngFor="let step of orderStatuses; let i = index"
+           class="timeline-step"
+           [ngClass]="getStepClass(step)">
+
+        <div class="circle"></div>
+
+        <div class="content">
+          <strong>{{ step }}</strong>
+
+          <div class="timestamp" *ngIf="getTimestamp(step)">
+            {{ getTimestamp(step) | date:'medium' }}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
     <button class="btn-red"
             (click)="closeTracking()">
@@ -205,3 +232,4 @@
 
   </div>
 </div>
+
