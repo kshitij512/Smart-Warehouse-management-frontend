@@ -31,8 +31,11 @@ export class ProductService {
     return this.http.delete(`${this.API}/${id}`);
   }
 
-  checkSkuExists(sku: string) {
-  return this.http.get<boolean>(`/api/products/exists/${sku}`);
+checkSkuExists(sku: string) {
+  return this.http.get(
+    `${this.API}/exists/${sku}`,
+    { observe: 'response' }
+  );
 }
 
 }

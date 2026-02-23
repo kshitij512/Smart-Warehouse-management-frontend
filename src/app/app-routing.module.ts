@@ -4,14 +4,12 @@ import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
 
-  // DEFAULT ROUTE
   {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
   },
 
-  // LOGIN ROUTE (NO GUARD)
   {
     path: 'login',
     loadComponent: () =>
@@ -19,7 +17,6 @@ export const routes: Routes = [
         .then(m => m.LoginComponent)
   },
 
-  // DASHBOARD
   {
     path: 'dashboard',
     canActivate: [authGuard],
@@ -28,7 +25,6 @@ export const routes: Routes = [
         .then(m => m.DashboardComponent)
   },
 
-  // USERS
   {
     path: 'users',
     canActivate: [authGuard, roleGuard],
@@ -38,7 +34,6 @@ export const routes: Routes = [
         .then(m => m.UsersComponent)
   },
 
-  // WAREHOUSES
   {
     path: 'warehouses',
     canActivate: [authGuard, roleGuard],
@@ -48,7 +43,6 @@ export const routes: Routes = [
         .then(m => m.WarehousesComponent)
   },
 
-  // PRODUCTS
   {
     path: 'products',
     canActivate: [authGuard, roleGuard],
@@ -58,7 +52,6 @@ export const routes: Routes = [
         .then(m => m.ProductsComponent)
   },
 
-  // ORDERS
   {
     path: 'orders',
     canActivate: [authGuard, roleGuard],
@@ -68,17 +61,18 @@ export const routes: Routes = [
         .then(m => m.OrdersComponent)
   },
 
-  // FALLBACK
+  {
+    path: 'inventory',
+    canActivate: [authGuard, roleGuard],
+    data: { roles: ['WAREHOUSE_MANAGER'] },
+    loadComponent: () =>
+      import('./features/inventory/inventory.component')
+        .then(m => m.InventoryComponent)
+  },
+
+  // ✅ ALWAYS LAST
   {
     path: '**',
     redirectTo: 'login'
-  },
-  {
-  path: 'inventory',
-  canActivate: [authGuard, roleGuard],
-  data: { roles: ['WAREHOUSE_MANAGER'] },
-  loadComponent: () =>
-    import('./features/inventory/inventory.component')
-      .then(m => m.InventoryComponent)
-}
+  }
 ];

@@ -17,6 +17,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   let authReq = req;
 
+  // Attach access token if present
   if (token) {
     authReq = req.clone({
       setHeaders: {
@@ -28,7 +29,21 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      if (error.status === 401 && !isRefreshing) {
+      const isAuthEndpoint =
+        req.url.includes('/api/auth/login') ||
+        req.url.includes('/api/auth/refresh');
+
+      // Only attempt refresh if:
+      // - 401
+      // - Not refreshing
+      // - Not already auth endpoint
+      // - Access token exists
+      if (
+        error.status === 401 &&
+        !isRefreshing &&
+        !isAuthEndpoint &&
+        authService.getAccessToken()
+      ) {
 
         isRefreshing = true;
 
@@ -50,8 +65,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return next(retryReq);
           }),
           catchError(refreshError => {
-            isRefreshing = false;
 
+            isRefreshing = false;
             store.dispatch(AuthActions.logout());
 
             return throwError(() => refreshError);

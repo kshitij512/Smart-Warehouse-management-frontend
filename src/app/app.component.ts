@@ -28,6 +28,7 @@ export class AppComponent {
     this.token$ = this.store.select(selectToken);
     this.user$ = this.store.select(selectUser);
     this.role$ = this.store.select(selectRole);
+    this.store.dispatch(AuthActions.restoreSession());
   }
 
   logout() {

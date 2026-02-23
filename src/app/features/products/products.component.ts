@@ -61,19 +61,27 @@ export class ProductsComponent {
 
   return (control: AbstractControl) => {
 
-    if (!control.value || this.editMode) {
-      return of(null);
-    }
+   if (!control.value || this.editMode) {
+  return of(null);
+}
+
+if (control.value.length < 3) {
+  return of(null);
+}
 
     return of(control.value).pipe(
       debounceTime(400),
       switchMap(sku =>
-        this.productService.checkSkuExists(sku)
-      ),
-      map(exists =>
-        exists ? { skuTaken: true } : null
-      ),
-      catchError(() => of(null))
+  this.productService.checkSkuExists(sku)
+),
+map(response => {
+  // Backend returns 204 when SKU exists
+  if (response.status === 204) {
+    return { skuTaken: true };
+  }
+  return null;
+}),
+catchError(() => of(null))
     );
   };
 }

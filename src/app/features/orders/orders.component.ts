@@ -177,7 +177,9 @@ export class OrdersComponent {
 
     this.userService.getAllUsers()
       .subscribe(data => {
-        this.staffUsers = data.filter(u => u.role === 'STAFF');
+        this.staffUsers = data.filter(u =>
+      u.role?.replace('ROLE_', '') === 'STAFF'
+    );
       });
   }
 
@@ -271,6 +273,13 @@ export class OrdersComponent {
         }
       });
   }
+
+  canAssign(order: OrderUI): boolean {
+  return this.canAssignStaff &&
+         order.status !== 'SHIPPED' &&
+         order.status !== 'DELIVERED' &&
+         order.status !== 'CANCELLED';
+}
 
   /* ================= TRACKING ================= */
 

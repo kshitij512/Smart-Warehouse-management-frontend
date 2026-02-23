@@ -94,7 +94,6 @@
   <!-- FILTER BAR -->
   <div class="warehouse-selector">
 
-    <!-- Warehouse Filter -->
     <select *ngIf="!isStaff"
             [(ngModel)]="selectedWarehouseId"
             (ngModelChange)="updateFilters()">
@@ -106,7 +105,6 @@
 
     </select>
 
-    <!-- Status Filter -->
     <select [(ngModel)]="selectedStatus"
             (ngModelChange)="updateFilters()">
 
@@ -143,30 +141,28 @@
       <!-- STATUS COLUMN -->
       <td>
 
-        <!-- Status Badge -->
-        <span class="status"
-              [ngClass]="order.status.toLowerCase()">
-          {{ order.status }}
-        </span>
+  <span class="status"
+        [ngClass]="order.status.toLowerCase()">
+    {{ order.status }}
+  </span>
 
-        <!-- Status Dropdown -->
-        <select
-          *ngIf="canUpdateStatus && order.allowedTransitions.length > 0"
-          [ngModel]="null"
-          (ngModelChange)="updateStatus(order, $event)">
+  <select
+    *ngIf="canUpdateStatus && order.allowedTransitions.length > 0"
+    [ngModel]="null"
+    (ngModelChange)="updateStatus(order, $event)">
 
-          <option [ngValue]="null" disabled>
-            Change Status
-          </option>
+    <option [ngValue]="null" disabled>
+      Change Status
+    </option>
 
-          <option *ngFor="let s of order.allowedTransitions"
-                  [ngValue]="s">
-            {{ s }}
-          </option>
+    <option *ngFor="let s of order.allowedTransitions"
+            [ngValue]="s">
+      {{ s }}
+    </option>
 
-        </select>
+  </select>
 
-      </td>
+</td>
 
       <!-- ASSIGNED STAFF -->
       <td>
@@ -177,18 +173,33 @@
       <td class="action-buttons">
 
         <!-- ASSIGN STAFF -->
-        <div *ngIf="canAssignStaff" class="assign-row">
+        <div *ngIf="canAssign(order)" class="assign-row">
 
-          <select [(ngModel)]="order._selectedStaffId">
-            <option [ngValue]="null">Assign Staff</option>
-            <option *ngFor="let s of staffUsers" [ngValue]="s.id">
+          <select [(ngModel)]="order._selectedStaffId"
+                  [disabled]="
+                    order.status === 'DELIVERED' ||
+                    order.status === 'CANCELLED' ||
+                    staffUsers.length === 0
+                  ">
+
+            <option [ngValue]="null">
+              {{ staffUsers.length === 0 ? 'No Staff Available' : 'Assign Staff' }}
+            </option>
+
+            <option *ngFor="let s of staffUsers"
+                    [ngValue]="s.id">
               {{ s.name }}
             </option>
+
           </select>
 
           <button class="btn-yellow small"
                   (click)="assignStaff(order)"
-                  [disabled]="!order._selectedStaffId">
+                  [disabled]="
+                    !order._selectedStaffId ||
+                    order.status === 'DELIVERED' ||
+                    order.status === 'CANCELLED'
+                  ">
             Assign
           </button>
 

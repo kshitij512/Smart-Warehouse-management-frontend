@@ -1,9 +1,60 @@
 <div class="login-container">
-  <h2>Login</h2>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <input type="email" formControlName="email" placeholder="Email" />
-    <input type="password" formControlName="password" placeholder="Password" />
-    <button type="submit">Login</button>
-  </form>
+  <div class="login-card">
+
+    <h2>Smart Warehouse</h2>
+    <p class="subtitle">Sign in to continue</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <!-- Email -->
+      <div class="form-group">
+        <input
+          type="email"
+          placeholder="Email"
+          formControlName="email"
+        />
+
+        <div class="validation-error"
+             *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+
+          <span *ngIf="form.get('email')?.hasError('required')">
+            Email is required
+          </span>
+
+          <span *ngIf="form.get('email')?.hasError('email')">
+            Invalid email format
+          </span>
+
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <input
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
+
+        <div class="validation-error"
+             *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+          Password is required
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="login-btn"
+        [disabled]="form.invalid">
+
+        Login
+
+      </button>
+
+    </form>
+
+  </div>
+
 </div>

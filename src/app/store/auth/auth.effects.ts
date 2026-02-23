@@ -65,4 +65,28 @@ export class AuthEffects {
     )
   )
 );
+
+restoreSession$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(AuthActions.restoreSession),
+    switchMap(() =>
+      this.authService.refresh().pipe(
+        map(response => {
+          const token = response.accessToken;
+
+          this.authService.setAccessToken(token);
+
+          const payload = decodeJwt(token);
+
+          return AuthActions.loginSuccess({
+            token,
+            user: payload.sub,
+            role: payload.role
+          });
+        }),
+        catchError(() => of({ type: '[Auth] Restore Failed' }))
+      )
+    )
+  )
+);
 }
